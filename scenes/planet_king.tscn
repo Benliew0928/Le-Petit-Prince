@@ -1,0 +1,237 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="1"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="2"]
+[ext_resource type="Script" path="res://scripts/npcs/king.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/objects/star_pickup.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/objects/sunset_zone.gd" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/geological_landmark.tscn" id="7"]
+[ext_resource type="Script" path="res://scripts/objects/planet_sun.gd" id="8"]
+[ext_resource type="Shader" path="res://shaders/sun_shader.gdshader" id="9"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("2")
+shader_parameter/outline_color = Color(0.08, 0.03, 0.12, 1)
+shader_parameter/outline_thickness = 0.035
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_planet"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.45, 0.2, 0.6, 1)
+shader_parameter/shadow_color = Color(0.2, 0.08, 0.3, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.08
+shader_parameter/specular_size = 0.06
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.4
+shader_parameter/rim_color = Color(0.7, 0.45, 0.9, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_king"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.85, 0.15, 0.15, 1)
+shader_parameter/shadow_color = Color(0.45, 0.05, 0.05, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.1
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.3
+shader_parameter/rim_color = Color(1.0, 0.4, 0.3, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crown"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.95, 0.8, 0.2, 1)
+shader_parameter/shadow_color = Color(0.55, 0.4, 0.05, 1)
+shader_parameter/shadow_threshold = -0.05
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.2
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.35
+shader_parameter/rim_color = Color(1.0, 0.95, 0.5, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_star"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(1.0, 0.95, 0.5, 1)
+shader_parameter/shadow_color = Color(0.7, 0.6, 0.2, 1)
+shader_parameter/shadow_threshold = -0.2
+shader_parameter/shadow_smoothness = 0.1
+shader_parameter/specular_size = 0.3
+shader_parameter/specular_smoothness = 0.06
+shader_parameter/rim_width = 0.5
+shader_parameter/rim_color = Color(1.0, 1.0, 0.8, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_throne"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.7, 0.55, 0.2, 1)
+shader_parameter/shadow_color = Color(0.35, 0.25, 0.08, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.1
+shader_parameter/rim_width = 0.3
+shader_parameter/rim_color = Color(0.9, 0.75, 0.4, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sunset_marker"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.9, 0.5, 0.15, 1)
+shader_parameter/shadow_color = Color(0.5, 0.2, 0.05, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.08
+shader_parameter/specular_size = 0.15
+shader_parameter/specular_smoothness = 0.05
+shader_parameter/rim_width = 0.4
+shader_parameter/rim_color = Color(1.0, 0.7, 0.3, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_planet"]
+radius = 6.0
+height = 12.0
+radial_segments = 48
+rings = 24
+material = SubResource("ShaderMaterial_planet")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_planet"]
+radius = 6.0
+
+[sub_resource type="CapsuleMesh" id="KingBody"]
+radius = 0.25
+height = 0.8
+material = SubResource("ShaderMaterial_king")
+
+[sub_resource type="SphereMesh" id="KingHead"]
+radius = 0.2
+height = 0.4
+material = SubResource("ShaderMaterial_king")
+
+[sub_resource type="CylinderMesh" id="CrownMesh"]
+top_radius = 0.18
+bottom_radius = 0.15
+height = 0.15
+material = SubResource("ShaderMaterial_crown")
+
+[sub_resource type="CapsuleShape3D" id="KingCollision"]
+radius = 0.3
+height = 1.0
+
+[sub_resource type="BoxMesh" id="ThroneSeat"]
+size = Vector3(0.7, 0.15, 0.5)
+material = SubResource("ShaderMaterial_throne")
+
+[sub_resource type="BoxMesh" id="ThroneBack"]
+size = Vector3(0.7, 0.8, 0.1)
+material = SubResource("ShaderMaterial_throne")
+
+[sub_resource type="SphereMesh" id="StarMesh"]
+radius = 0.15
+height = 0.3
+radial_segments = 8
+rings = 4
+material = SubResource("ShaderMaterial_star")
+
+[sub_resource type="SphereShape3D" id="StarCollision"]
+radius = 0.25
+
+[sub_resource type="SphereShape3D" id="SunsetZoneShape"]
+radius = 3.0
+
+[sub_resource type="CylinderMesh" id="SunsetMarkerMesh"]
+top_radius = 0.4
+bottom_radius = 0.5
+height = 0.1
+material = SubResource("ShaderMaterial_sunset_marker")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sun"]
+shader = ExtResource("9")
+shader_parameter/core_color = Color(1.0, 0.92, 0.85, 1)
+shader_parameter/corona_color = Color(0.9, 0.45, 0.2, 1)
+shader_parameter/intensity = 10.0
+shader_parameter/corona_size = 1.2
+shader_parameter/turbulence_speed = 0.25
+
+[sub_resource type="SphereMesh" id="SphereMesh_sun"]
+radius = 1.5
+height = 3.0
+radial_segments = 20
+rings = 10
+material = SubResource("ShaderMaterial_sun")
+
+[node name="PlanetKing" type="StaticBody3D" groups=["planet"]]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_planet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_planet")
+
+[node name="King" type="StaticBody3D" parent="." groups=["king"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.3, 0)
+script = ExtResource("3")
+
+[node name="Body" type="MeshInstance3D" parent="King"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+mesh = SubResource("KingBody")
+
+[node name="Head" type="MeshInstance3D" parent="King"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("KingHead")
+
+[node name="Crown" type="MeshInstance3D" parent="King"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, 0)
+mesh = SubResource("CrownMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="King"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("KingCollision")
+
+[node name="ThroneSeat" type="MeshInstance3D" parent="King"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.15)
+mesh = SubResource("ThroneSeat")
+
+[node name="ThroneBack" type="MeshInstance3D" parent="King"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, -0.35)
+mesh = SubResource("ThroneBack")
+
+[node name="StarPickup" type="StaticBody3D" parent="." groups=["king_star"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.24, 4.24, 0)
+script = ExtResource("5")
+
+[node name="StarMesh" type="MeshInstance3D" parent="StarPickup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+mesh = SubResource("StarMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StarPickup"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+shape = SubResource("StarCollision")
+
+[node name="SunsetZone" type="Area3D" parent="." groups=["king_sunset"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.24, 0, -4.24)
+script = ExtResource("6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SunsetZone"]
+shape = SubResource("SunsetZoneShape")
+
+[node name="SunsetMarker" type="MeshInstance3D" parent="SunsetZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("SunsetMarkerMesh")
+
+[node name="GeologicalLandmark" parent="." instance=ExtResource("7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.0)
+landmark_id = "king"
+landmark_name = "Throne Peak"
+
+[node name="SunPivot" type="Node3D" parent="."]
+script = ExtResource("8")
+day_length = 20.0
+local_light_path = NodePath("LocalSun")
+
+[node name="LocalSun" type="OmniLight3D" parent="SunPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 18.0)
+light_color = Color(1, 0.88, 0.7, 1)
+light_energy = 2.0
+omni_range = 30.0
+shadow_enabled = true
+
+[node name="SunMesh" type="MeshInstance3D" parent="SunPivot/LocalSun"]
+mesh = SubResource("SphereMesh_sun")

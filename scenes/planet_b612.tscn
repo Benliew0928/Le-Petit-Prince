@@ -1,0 +1,310 @@
+[gd_scene load_steps=31 format=3]
+
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="1"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/rose.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/watering_can.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/objects/baobab_spawner.gd" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/house_exterior.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/shovel.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/garden_plot.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/airplane.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/geological_landmark.tscn" id="10"]
+[ext_resource type="Script" path="res://scripts/objects/planet_sun.gd" id="11"]
+[ext_resource type="Shader" path="res://shaders/sun_shader.gdshader" id="12"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("2")
+shader_parameter/outline_color = Color(0.08, 0.06, 0.03, 1)
+shader_parameter/outline_thickness = 0.035
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_toon"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.42, 0.61, 0.34, 1)
+shader_parameter/shadow_color = Color(0.14, 0.28, 0.11, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.08
+shader_parameter/specular_size = 0.04
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.45
+shader_parameter/rim_color = Color(0.88, 0.98, 0.66, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_path"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.72, 0.58, 0.34, 1)
+shader_parameter/shadow_color = Color(0.36, 0.24, 0.12, 1)
+shader_parameter/shadow_threshold = -0.08
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.18
+shader_parameter/rim_color = Color(0.96, 0.78, 0.45, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rock"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.5, 0.38, 0.28, 1)
+shader_parameter/shadow_color = Color(0.22, 0.14, 0.1, 1)
+shader_parameter/shadow_threshold = -0.05
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.2
+shader_parameter/rim_color = Color(0.72, 0.58, 0.42, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crater"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.16, 0.13, 0.11, 1)
+shader_parameter/shadow_color = Color(0.06, 0.04, 0.035, 1)
+shader_parameter/shadow_threshold = -0.05
+shader_parameter/shadow_smoothness = 0.04
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.14
+shader_parameter/rim_color = Color(0.28, 0.22, 0.16, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glow"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(1.0, 0.56, 0.12, 1)
+shader_parameter/shadow_color = Color(0.72, 0.2, 0.04, 1)
+shader_parameter/shadow_threshold = -0.08
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.22
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.35
+shader_parameter/rim_color = Color(1.0, 0.86, 0.28, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flower"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.96, 0.78, 0.2, 1)
+shader_parameter/shadow_color = Color(0.55, 0.28, 0.06, 1)
+shader_parameter/shadow_threshold = -0.05
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.06
+shader_parameter/rim_width = 0.25
+shader_parameter/rim_color = Color(1.0, 0.95, 0.45, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_1"]
+radius = 140.0
+height = 280.0
+radial_segments = 96
+rings = 48
+material = SubResource("ShaderMaterial_toon")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 140.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_patch"]
+radius = 1.0
+height = 0.12
+radial_segments = 24
+rings = 6
+material = SubResource("ShaderMaterial_path")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_volcano"]
+top_radius = 0.24
+bottom_radius = 0.75
+height = 1.05
+radial_segments = 12
+material = SubResource("ShaderMaterial_rock")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_crater"]
+top_radius = 0.28
+bottom_radius = 0.22
+height = 0.08
+radial_segments = 16
+material = SubResource("ShaderMaterial_crater")
+
+[sub_resource type="SphereMesh" id="SphereMesh_lava"]
+radius = 0.15
+height = 0.06
+radial_segments = 12
+rings = 4
+material = SubResource("ShaderMaterial_glow")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_baobab_trunk"]
+top_radius = 0.1
+bottom_radius = 0.22
+height = 1.15
+radial_segments = 10
+material = SubResource("ShaderMaterial_rock")
+
+[sub_resource type="SphereMesh" id="SphereMesh_baobab_canopy"]
+radius = 0.42
+height = 0.5
+radial_segments = 16
+rings = 8
+material = SubResource("ShaderMaterial_toon")
+
+[sub_resource type="SphereMesh" id="SphereMesh_flower"]
+radius = 0.07
+height = 0.055
+radial_segments = 8
+rings = 4
+material = SubResource("ShaderMaterial_flower")
+
+[sub_resource type="BoxMesh" id="BoxMesh_plaque"]
+size = Vector3(0.62, 0.06, 0.34)
+material = SubResource("ShaderMaterial_path")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sun"]
+shader = ExtResource("12")
+shader_parameter/core_color = Color(1.0, 0.98, 0.9, 1)
+shader_parameter/corona_color = Color(1.0, 0.6, 0.2, 1)
+shader_parameter/intensity = 15.0
+shader_parameter/corona_size = 1.5
+shader_parameter/turbulence_speed = 0.3
+
+[sub_resource type="SphereMesh" id="SphereMesh_sun"]
+radius = 5.0
+height = 10.0
+radial_segments = 32
+rings = 16
+material = SubResource("ShaderMaterial_sun")
+
+[node name="PlanetB612" type="StaticBody3D" groups=["planet"]]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_1")
+
+[node name="TopPath" type="MeshInstance3D" parent="."]
+transform = Transform3D(29.0, 0, 0, 0, 2.25, 0, 0, 0, 11.0, -12.0, 140.4, 2.0)
+mesh = SubResource("SphereMesh_patch")
+
+[node name="RosePath" type="MeshInstance3D" parent="."]
+transform = Transform3D(11.0, 0, 0, 0, 2.25, 0, 0, 0, 6.0, 37.0, 135.5, -12.0)
+mesh = SubResource("SphereMesh_patch")
+
+[node name="HousePath" type="MeshInstance3D" parent="."]
+transform = Transform3D(14.0, 0, 0, 0, 2.25, 0, 0, 0, 6.75, -46.0, 132.5, -11.5)
+mesh = SubResource("SphereMesh_patch")
+
+[node name="VolcanoClean" type="Node3D" parent="."]
+transform = Transform3D(2.9, 0, 0, 0, 2.9, 0, 0, 0, 2.9, 4.0, 135.0, 36.5)
+
+[node name="Cone" type="MeshInstance3D" parent="VolcanoClean"]
+mesh = SubResource("CylinderMesh_volcano")
+
+[node name="Crater" type="MeshInstance3D" parent="VolcanoClean"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+mesh = SubResource("CylinderMesh_crater")
+
+[node name="LavaGlow" type="MeshInstance3D" parent="VolcanoClean"]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("SphereMesh_lava")
+
+[node name="VolcanoDormant" type="Node3D" parent="."]
+transform = Transform3D(2.36, 0, 0, 0, 2.36, 0, 0, 0, 2.36, -24.0, 135.0, 28.0)
+
+[node name="Cone" type="MeshInstance3D" parent="VolcanoDormant"]
+mesh = SubResource("CylinderMesh_volcano")
+
+[node name="Crater" type="MeshInstance3D" parent="VolcanoDormant"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+mesh = SubResource("CylinderMesh_crater")
+
+[node name="VolcanoTiny" type="Node3D" parent="."]
+transform = Transform3D(1.72, 0, 0, 0, 1.72, 0, 0, 0, 1.72, 24.0, 135.0, 27.0)
+
+[node name="Cone" type="MeshInstance3D" parent="VolcanoTiny"]
+mesh = SubResource("CylinderMesh_volcano")
+
+[node name="Crater" type="MeshInstance3D" parent="VolcanoTiny"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+mesh = SubResource("CylinderMesh_crater")
+
+[node name="DecorativeBaobab" type="Node3D" parent="."]
+transform = Transform3D(2.3, 0, 0, 0, 2.3, 0, 0, 0, 2.3, 59.0, 124.5, -31.0)
+
+[node name="Trunk" type="MeshInstance3D" parent="DecorativeBaobab"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)
+mesh = SubResource("CylinderMesh_baobab_trunk")
+
+[node name="CanopyMain" type="MeshInstance3D" parent="DecorativeBaobab"]
+transform = Transform3D(1.25, 0, 0, 0, 0.82, 0, 0, 0, 1.25, 0, 1.22, 0)
+mesh = SubResource("SphereMesh_baobab_canopy")
+
+[node name="CanopyLeft" type="MeshInstance3D" parent="DecorativeBaobab"]
+transform = Transform3D(0.9, 0, 0, 0, 0.72, 0, 0, 0, 0.9, -0.35, 1.08, 0.04)
+mesh = SubResource("SphereMesh_baobab_canopy")
+
+[node name="CanopyRight" type="MeshInstance3D" parent="DecorativeBaobab"]
+transform = Transform3D(0.9, 0, 0, 0, 0.72, 0, 0, 0, 0.9, 0.35, 1.08, -0.02)
+mesh = SubResource("SphereMesh_baobab_canopy")
+
+[node name="B612Plaque" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.4, 0, 0, 0, 0.7, 0, 0, 0, 1.2, -11.0, 140.4, -15.5)
+mesh = SubResource("BoxMesh_plaque")
+
+[node name="FlowerA" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.25, 0, 0, 0, 0.7, 0, 0, 0, 1.25, 27.0, 137.5, -18.5)
+mesh = SubResource("SphereMesh_flower")
+
+[node name="FlowerB" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.05, 0, 0, 0, 0.58, 0, 0, 0, 1.05, 44.0, 132.0, -15.5)
+mesh = SubResource("SphereMesh_flower")
+
+[node name="FlowerC" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.05, 0, 0, 0, 0.6, 0, 0, 0, 1.05, -35.5, 134.0, -19.0)
+mesh = SubResource("SphereMesh_flower")
+
+[node name="Rose" parent="." instance=ExtResource("3")]
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 38.0, 135.0, -12.5)
+
+[node name="WateringCan" parent="." instance=ExtResource("4")]
+transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 51.0, 129.5, -2.5)
+
+[node name="HouseExterior" parent="." instance=ExtResource("6")]
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, -48.0, 130.5, -11.0)
+
+[node name="Shovel" parent="." instance=ExtResource("7")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, -60.0, 123.5, 11.5)
+
+[node name="GardenPlot" parent="." instance=ExtResource("8")]
+transform = Transform3D(1.45, 0, 0, 0, 1.45, 0, 0, 0, 1.45, -7.0, 130.5, 48.5)
+
+[node name="Airplane" parent="." instance=ExtResource("9")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, -143.0, 0)
+
+[node name="BaobabSpawner" type="Node3D" parent="."]
+script = ExtResource("5")
+
+[node name="SpawnPoint1" type="Marker3D" parent="BaobabSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82.5, 101.5, -40.0)
+
+[node name="SpawnPoint2" type="Marker3D" parent="BaobabSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.0, 98.0, -42.0)
+
+[node name="SpawnPoint3" type="Marker3D" parent="BaobabSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.0, 84.0, 87.0)
+
+[node name="SpawnPoint4" type="Marker3D" parent="BaobabSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77.5, 78.0, 85.0)
+
+[node name="SpawnPoint5" type="Marker3D" parent="BaobabSpawner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 93.0, -104.5)
+
+[node name="GeologicalLandmark" parent="." instance=ExtResource("10")]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 90.0, 69.0, -85.0)
+landmark_id = "b612"
+landmark_name = "Volcano Vents"
+
+[node name="SunPivot" type="Node3D" parent="."]
+script = ExtResource("11")
+day_length = 24.0
+local_light_path = NodePath("LocalSun")
+
+[node name="LocalSun" type="OmniLight3D" parent="SunPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 290.0)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.2
+omni_range = 450.0
+shadow_enabled = true
+
+[node name="SunMesh" type="MeshInstance3D" parent="SunPivot/LocalSun"]
+mesh = SubResource("SphereMesh_sun")

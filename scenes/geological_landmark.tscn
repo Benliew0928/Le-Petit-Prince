@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/objects/geological_landmark.gd" id="1"]
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="2"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("3")
+shader_parameter/outline_color = Color(0.05, 0.1, 0.1, 1)
+shader_parameter/outline_thickness = 0.025
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crystal"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.1, 0.9, 0.7, 1)
+shader_parameter/shadow_color = Color(0.02, 0.35, 0.28, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.15
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.3
+shader_parameter/rim_color = Color(0.6, 1.0, 0.9, 1)
+
+[sub_resource type="BoxMesh" id="CrystalMesh"]
+size = Vector3(0.4, 0.4, 0.4)
+material = SubResource("ShaderMaterial_crystal")
+
+[sub_resource type="SphereShape3D" id="CollisionShape"]
+radius = 1.5
+
+[node name="GeologicalLandmark" type="Area3D"]
+script = ExtResource("1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 0, 0, 0)
+mesh = SubResource("CrystalMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CollisionShape")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(0.1, 0.9, 0.7, 1)
+light_energy = 1.2
+omni_range = 4.0

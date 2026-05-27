@@ -1,0 +1,137 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/objects/airplane.gd" id="1"]
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="2"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("3")
+shader_parameter/outline_color = Color(0.1, 0.06, 0.03, 1)
+shader_parameter/outline_thickness = 0.02
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fuselage"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.85, 0.75, 0.3, 1)
+shader_parameter/shadow_color = Color(0.45, 0.35, 0.1, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.1
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.3
+shader_parameter/rim_color = Color(1.0, 0.9, 0.5, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wing"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.9, 0.82, 0.45, 1)
+shader_parameter/shadow_color = Color(0.5, 0.4, 0.15, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.05
+shader_parameter/rim_width = 0.25
+shader_parameter/rim_color = Color(1.0, 0.95, 0.7, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_propeller"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.4, 0.3, 0.2, 1)
+shader_parameter/shadow_color = Color(0.15, 0.1, 0.05, 1)
+shader_parameter/shadow_threshold = 0.0
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.2
+shader_parameter/rim_color = Color(0.5, 0.4, 0.3, 1)
+
+[sub_resource type="CapsuleMesh" id="FuselageMesh"]
+radius = 0.5
+height = 3.5
+material = SubResource("ShaderMaterial_fuselage")
+
+[sub_resource type="BoxMesh" id="WingMesh"]
+size = Vector3(5.0, 0.1, 1.25)
+material = SubResource("ShaderMaterial_wing")
+
+[sub_resource type="BoxMesh" id="TailMesh"]
+size = Vector3(1.75, 0.1, 0.75)
+material = SubResource("ShaderMaterial_wing")
+
+[sub_resource type="BoxMesh" id="FinMesh"]
+size = Vector3(0.1, 0.8, 0.6)
+material = SubResource("ShaderMaterial_wing")
+
+[sub_resource type="BoxMesh" id="PropMesh"]
+size = Vector3(1.5, 0.15, 0.1)
+material = SubResource("ShaderMaterial_propeller")
+
+[sub_resource type="BoxMesh" id="DashMesh"]
+size = Vector3(0.8, 0.3, 0.2)
+material = SubResource("ShaderMaterial_fuselage")
+
+[sub_resource type="TorusMesh" id="SteerMesh"]
+inner_radius = 0.15
+outer_radius = 0.2
+rings = 16
+tube_segments = 8
+material = SubResource("ShaderMaterial_propeller")
+
+[sub_resource type="CylinderMesh" id="MeterMesh"]
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.02
+radial_segments = 16
+material = SubResource("ShaderMaterial_wing")
+
+[sub_resource type="CapsuleShape3D" id="CollisionShape"]
+radius = 0.75
+height = 4.0
+
+[node name="Airplane" type="CharacterBody3D"]
+script = ExtResource("1")
+
+[node name="Fuselage" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.625, 0)
+mesh = SubResource("FuselageMesh")
+
+[node name="WingUpper" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.125)
+mesh = SubResource("WingMesh")
+
+[node name="WingLower" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.375, 0.125)
+mesh = SubResource("WingMesh")
+
+[node name="TailWing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 1.75)
+mesh = SubResource("TailMesh")
+
+[node name="TailFin" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 1.75)
+mesh = SubResource("FinMesh")
+
+[node name="Propeller" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -1.8)
+mesh = SubResource("PropMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.7, 0)
+shape = SubResource("CollisionShape")
+
+[node name="Dashboard" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866, -0.5, 0, 0.5, 0.866, 0, 0.85, -0.6)
+mesh = SubResource("DashMesh")
+
+[node name="SteeringWheel" type="MeshInstance3D" parent="Dashboard"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0.1)
+mesh = SubResource("SteerMesh")
+
+[node name="Meter1" type="MeshInstance3D" parent="Dashboard"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.25, 0.15, -0.1)
+mesh = SubResource("MeterMesh")
+
+[node name="Meter2" type="MeshInstance3D" parent="Dashboard"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.25, 0.15, -0.1)
+mesh = SubResource("MeterMesh")
+
+[node name="CockpitCameraPos" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, -0.1)

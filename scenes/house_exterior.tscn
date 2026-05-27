@@ -1,0 +1,196 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scripts/objects/house_exterior.gd" id="1"]
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="2"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("3")
+shader_parameter/outline_color = Color(0.1, 0.07, 0.03, 1)
+shader_parameter/outline_thickness = 0.024
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_walls"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.94, 0.84, 0.62, 1)
+shader_parameter/shadow_color = Color(0.5, 0.38, 0.22, 1)
+shader_parameter/shadow_threshold = -0.08
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.22
+shader_parameter/rim_color = Color(1.0, 0.94, 0.74, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_roof"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.55, 0.18, 0.11, 1)
+shader_parameter/shadow_color = Color(0.24, 0.07, 0.04, 1)
+shader_parameter/shadow_threshold = -0.08
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.03
+shader_parameter/rim_width = 0.28
+shader_parameter/rim_color = Color(0.82, 0.42, 0.25, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wood"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.48, 0.28, 0.12, 1)
+shader_parameter/shadow_color = Color(0.18, 0.08, 0.03, 1)
+shader_parameter/shadow_threshold = -0.04
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.18
+shader_parameter/rim_color = Color(0.68, 0.42, 0.22, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_window"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.5, 0.78, 0.92, 1)
+shader_parameter/shadow_color = Color(0.17, 0.35, 0.52, 1)
+shader_parameter/shadow_threshold = -0.05
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.3
+shader_parameter/specular_smoothness = 0.05
+shader_parameter/rim_width = 0.35
+shader_parameter/rim_color = Color(0.9, 1.0, 1.0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_light"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(1.0, 0.72, 0.32, 1)
+shader_parameter/shadow_color = Color(0.66, 0.32, 0.08, 1)
+shader_parameter/shadow_threshold = -0.08
+shader_parameter/shadow_smoothness = 0.04
+shader_parameter/specular_size = 0.18
+shader_parameter/rim_width = 0.35
+shader_parameter/rim_color = Color(1.0, 0.9, 0.45, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_walls"]
+size = Vector3(2.4, 1.35, 1.75)
+material = SubResource("ShaderMaterial_walls")
+
+[sub_resource type="PrismMesh" id="PrismMesh_roof"]
+size = Vector3(2.95, 0.9, 2.25)
+material = SubResource("ShaderMaterial_roof")
+
+[sub_resource type="BoxMesh" id="BoxMesh_door"]
+size = Vector3(0.55, 0.92, 0.08)
+material = SubResource("ShaderMaterial_wood")
+
+[sub_resource type="BoxMesh" id="BoxMesh_window"]
+size = Vector3(0.46, 0.38, 0.06)
+material = SubResource("ShaderMaterial_window")
+
+[sub_resource type="BoxMesh" id="BoxMesh_trim"]
+size = Vector3(0.58, 0.08, 0.08)
+material = SubResource("ShaderMaterial_wood")
+
+[sub_resource type="BoxMesh" id="BoxMesh_porch"]
+size = Vector3(1.25, 0.14, 0.8)
+material = SubResource("ShaderMaterial_wood")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_chimney"]
+top_radius = 0.1
+bottom_radius = 0.13
+height = 0.58
+radial_segments = 12
+material = SubResource("ShaderMaterial_roof")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lamp"]
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.14
+radial_segments = 12
+material = SubResource("ShaderMaterial_light")
+
+[sub_resource type="BoxMesh" id="BoxMesh_flower_box"]
+size = Vector3(0.55, 0.12, 0.18)
+material = SubResource("ShaderMaterial_wood")
+
+[sub_resource type="SphereMesh" id="SphereMesh_flower"]
+radius = 0.045
+height = 0.04
+radial_segments = 8
+rings = 4
+material = SubResource("ShaderMaterial_light")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(2.6, 2.1, 2.05)
+
+[node name="HouseExterior" type="StaticBody3D"]
+script = ExtResource("1")
+
+[node name="Walls" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.68, 0)
+mesh = SubResource("BoxMesh_walls")
+
+[node name="Roof" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.52, 0)
+mesh = SubResource("PrismMesh_roof")
+
+[node name="Door" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0.91)
+mesh = SubResource("BoxMesh_door")
+
+[node name="DoorGlow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 1.12)
+light_color = Color(1.0, 0.72, 0.38, 1)
+light_energy = 0.75
+omni_range = 3.0
+shadow_enabled = false
+
+[node name="Porch" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 1.08)
+mesh = SubResource("BoxMesh_porch")
+
+[node name="WindowLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, 0.82, 0.92)
+mesh = SubResource("BoxMesh_window")
+
+[node name="WindowRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.72, 0.82, 0.92)
+mesh = SubResource("BoxMesh_window")
+
+[node name="WindowLeftSill" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, 0.57, 0.96)
+mesh = SubResource("BoxMesh_trim")
+
+[node name="WindowRightSill" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.72, 0.57, 0.96)
+mesh = SubResource("BoxMesh_trim")
+
+[node name="FlowerBoxLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, 0.48, 1.0)
+mesh = SubResource("BoxMesh_flower_box")
+
+[node name="FlowerBoxRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.72, 0.48, 1.0)
+mesh = SubResource("BoxMesh_flower_box")
+
+[node name="FlowerLeftA" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.58, 1.08)
+mesh = SubResource("SphereMesh_flower")
+
+[node name="FlowerLeftB" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.64, 0.59, 1.08)
+mesh = SubResource("SphereMesh_flower")
+
+[node name="FlowerRightA" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.62, 0.58, 1.08)
+mesh = SubResource("SphereMesh_flower")
+
+[node name="FlowerRightB" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.86, 0.59, 1.08)
+mesh = SubResource("SphereMesh_flower")
+
+[node name="Chimney" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.93, -0.38)
+mesh = SubResource("CylinderMesh_chimney")
+
+[node name="PorchLamp" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34, 1.1, 0.98)
+mesh = SubResource("CylinderMesh_lamp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("BoxShape3D_1")

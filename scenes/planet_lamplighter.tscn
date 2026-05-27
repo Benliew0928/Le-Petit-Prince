@@ -1,0 +1,165 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="1"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="2"]
+[ext_resource type="Script" path="res://scripts/npcs/lamplighter.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/systems/planet_gravity.gd" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/geological_landmark.tscn" id="5"]
+[ext_resource type="Script" path="res://scripts/objects/planet_sun.gd" id="6"]
+[ext_resource type="Shader" path="res://shaders/sun_shader.gdshader" id="7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("2")
+shader_parameter/outline_color = Color(0.05, 0.08, 0.1, 1)
+shader_parameter/outline_thickness = 0.03
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_planet"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.35, 0.45, 0.55, 1)
+shader_parameter/shadow_color = Color(0.15, 0.2, 0.25, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.08
+shader_parameter/specular_size = 0.05
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.3
+shader_parameter/rim_color = Color(0.55, 0.65, 0.75, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lamplighter"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.2, 0.2, 0.25, 1)
+shader_parameter/shadow_color = Color(0.05, 0.05, 0.1, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.1
+shader_parameter/rim_width = 0.3
+shader_parameter/rim_color = Color(0.4, 0.4, 0.5, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lamp"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("1")
+shader_parameter/base_color = Color(0.1, 0.1, 0.1, 1)
+shader_parameter/shadow_color = Color(0.0, 0.0, 0.0, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.05
+shader_parameter/rim_width = 0.2
+shader_parameter/rim_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glass"]
+albedo_color = Color(1, 0.9, 0.4, 1)
+emission_enabled = true
+emission = Color(1, 0.9, 0.3, 1)
+emission_energy_multiplier = 0.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_planet"]
+radius = 5.0
+height = 10.0
+radial_segments = 32
+rings = 16
+material = SubResource("ShaderMaterial_planet")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_planet"]
+radius = 5.0
+
+[sub_resource type="CapsuleMesh" id="BodyMesh"]
+radius = 0.2
+height = 0.7
+material = SubResource("ShaderMaterial_lamplighter")
+
+[sub_resource type="SphereMesh" id="HeadMesh"]
+radius = 0.15
+height = 0.3
+material = SubResource("ShaderMaterial_lamplighter")
+
+[sub_resource type="CylinderMesh" id="PoleMesh"]
+top_radius = 0.05
+bottom_radius = 0.08
+height = 1.5
+material = SubResource("ShaderMaterial_lamp")
+
+[sub_resource type="SphereMesh" id="GlassMesh"]
+radius = 0.2
+height = 0.4
+material = SubResource("StandardMaterial3D_glass")
+
+[sub_resource type="CapsuleShape3D" id="InteractShape"]
+radius = 0.5
+height = 2.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sun"]
+shader = ExtResource("7")
+shader_parameter/core_color = Color(0.9, 0.95, 1.0, 1)
+shader_parameter/corona_color = Color(0.6, 0.7, 1.0, 1)
+shader_parameter/intensity = 10.0
+shader_parameter/corona_size = 1.2
+shader_parameter/turbulence_speed = 0.25
+
+[sub_resource type="SphereMesh" id="SphereMesh_sun"]
+radius = 1.5
+height = 3.0
+radial_segments = 20
+rings = 10
+material = SubResource("ShaderMaterial_sun")
+
+[node name="PlanetLamplighter" type="StaticBody3D" groups=["planet"]]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_planet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_planet")
+
+[node name="Lamplighter" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.0, 0)
+script = ExtResource("3")
+
+[node name="Body" type="MeshInstance3D" parent="Lamplighter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.35, 0)
+mesh = SubResource("BodyMesh")
+
+[node name="Head" type="MeshInstance3D" parent="Lamplighter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.75, 0)
+mesh = SubResource("HeadMesh")
+
+[node name="Streetlamp" type="Node3D" parent="Lamplighter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0, 0)
+
+[node name="Pole" type="MeshInstance3D" parent="Lamplighter/Streetlamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+mesh = SubResource("PoleMesh")
+
+[node name="LampMesh" type="MeshInstance3D" parent="Lamplighter/Streetlamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+mesh = SubResource("GlassMesh")
+
+[node name="LampLight" type="OmniLight3D" parent="Lamplighter/Streetlamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+light_color = Color(1, 0.9, 0.6, 1)
+light_energy = 2.0
+omni_range = 10.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Lamplighter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+shape = SubResource("InteractShape")
+
+[node name="GeologicalLandmark" parent="." instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.0, 0)
+landmark_id = "lamplighter"
+landmark_name = "Midnight Pole"
+
+[node name="SunPivot" type="Node3D" parent="."]
+script = ExtResource("6")
+day_length = 8.0
+local_light_path = NodePath("LocalSun")
+
+[node name="LocalSun" type="OmniLight3D" parent="SunPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15.0)
+light_color = Color(0.9, 0.95, 1.0, 1)
+light_energy = 1.8
+omni_range = 25.0
+shadow_enabled = true
+
+[node name="SunMesh" type="MeshInstance3D" parent="SunPivot/LocalSun"]
+mesh = SubResource("SphereMesh_sun")

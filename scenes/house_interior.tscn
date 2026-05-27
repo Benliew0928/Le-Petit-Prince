@@ -1,0 +1,398 @@
+[gd_scene load_steps=38 format=3]
+
+[ext_resource type="Script" path="res://scripts/objects/house_interior.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/objects/seed_shelf.gd" id="2"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor"]
+albedo_color = Color(0.34, 0.22, 0.11, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_wall"]
+albedo_color = Color(0.9, 0.8, 0.62, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_trim"]
+albedo_color = Color(0.48, 0.29, 0.13, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_bed"]
+albedo_color = Color(0.4, 0.68, 0.55, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_blanket"]
+albedo_color = Color(0.95, 0.67, 0.18, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_pillow"]
+albedo_color = Color(0.96, 0.92, 0.78, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_shelf"]
+albedo_color = Color(0.5, 0.31, 0.13, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_door"]
+albedo_color = Color(0.55, 0.34, 0.15, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_rug"]
+albedo_color = Color(0.66, 0.16, 0.18, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_table"]
+albedo_color = Color(0.58, 0.36, 0.16, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_fireplace"]
+albedo_color = Color(0.36, 0.32, 0.3, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_fire"]
+albedo_color = Color(1.0, 0.45, 0.08, 1)
+emission_enabled = true
+emission = Color(1.0, 0.32, 0.05, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_window"]
+transparency = 1
+albedo_color = Color(0.62, 0.86, 1.0, 0.45)
+
+[sub_resource type="StandardMaterial3D" id="Mat_book"]
+albedo_color = Color(0.22, 0.32, 0.65, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_lamp"]
+albedo_color = Color(1.0, 0.84, 0.46, 1)
+emission_enabled = true
+emission = Color(1.0, 0.68, 0.28, 1)
+emission_energy_multiplier = 0.6
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+size = Vector3(8, 0.1, 7)
+material = SubResource("Mat_floor")
+
+[sub_resource type="BoxMesh" id="WallMesh_long"]
+size = Vector3(8, 3.2, 0.2)
+material = SubResource("Mat_wall")
+
+[sub_resource type="BoxMesh" id="WallMesh_short"]
+size = Vector3(0.2, 3.2, 7)
+material = SubResource("Mat_wall")
+
+[sub_resource type="BoxMesh" id="WallMesh_half"]
+size = Vector3(2.7, 3.2, 0.2)
+material = SubResource("Mat_wall")
+
+[sub_resource type="BoxMesh" id="BeamMesh"]
+size = Vector3(8.2, 0.16, 0.16)
+material = SubResource("Mat_trim")
+
+[sub_resource type="BoxMesh" id="BedBaseMesh"]
+size = Vector3(1.8, 0.42, 1.1)
+material = SubResource("Mat_bed")
+
+[sub_resource type="BoxMesh" id="BlanketMesh"]
+size = Vector3(1.35, 0.12, 1.02)
+material = SubResource("Mat_blanket")
+
+[sub_resource type="BoxMesh" id="PillowMesh"]
+size = Vector3(0.52, 0.16, 0.42)
+material = SubResource("Mat_pillow")
+
+[sub_resource type="BoxMesh" id="ShelfMesh"]
+size = Vector3(1.1, 1.25, 0.38)
+material = SubResource("Mat_shelf")
+
+[sub_resource type="BoxMesh" id="DoorMesh"]
+size = Vector3(1.05, 2.2, 0.1)
+material = SubResource("Mat_door")
+
+[sub_resource type="BoxMesh" id="RugMesh"]
+size = Vector3(3.2, 0.035, 2.25)
+material = SubResource("Mat_rug")
+
+[sub_resource type="BoxMesh" id="TableTopMesh"]
+size = Vector3(1.35, 0.14, 0.9)
+material = SubResource("Mat_table")
+
+[sub_resource type="CylinderMesh" id="TableLegMesh"]
+top_radius = 0.045
+bottom_radius = 0.055
+height = 0.65
+radial_segments = 8
+material = SubResource("Mat_table")
+
+[sub_resource type="BoxMesh" id="ChairSeatMesh"]
+size = Vector3(0.55, 0.12, 0.55)
+material = SubResource("Mat_table")
+
+[sub_resource type="BoxMesh" id="ChairBackMesh"]
+size = Vector3(0.58, 0.72, 0.1)
+material = SubResource("Mat_table")
+
+[sub_resource type="BoxMesh" id="FireplaceMesh"]
+size = Vector3(1.25, 1.1, 0.38)
+material = SubResource("Mat_fireplace")
+
+[sub_resource type="SphereMesh" id="FireMesh"]
+radius = 0.24
+height = 0.38
+radial_segments = 12
+rings = 6
+material = SubResource("Mat_fire")
+
+[sub_resource type="BoxMesh" id="WindowMesh"]
+size = Vector3(1.1, 0.78, 0.06)
+material = SubResource("Mat_window")
+
+[sub_resource type="BoxMesh" id="BookMesh"]
+size = Vector3(0.36, 0.08, 0.24)
+material = SubResource("Mat_book")
+
+[sub_resource type="CylinderMesh" id="LampMesh"]
+top_radius = 0.18
+bottom_radius = 0.28
+height = 0.34
+radial_segments = 16
+material = SubResource("Mat_lamp")
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(8, 0.1, 7)
+
+[sub_resource type="BoxShape3D" id="WallShape_long"]
+size = Vector3(8, 3.2, 0.2)
+
+[sub_resource type="BoxShape3D" id="WallShape_short"]
+size = Vector3(0.2, 3.2, 7)
+
+[sub_resource type="BoxShape3D" id="WallShape_half"]
+size = Vector3(2.7, 3.2, 0.2)
+
+[sub_resource type="BoxShape3D" id="BedShape"]
+size = Vector3(1.95, 0.55, 1.25)
+
+[sub_resource type="BoxShape3D" id="ShelfShape"]
+size = Vector3(1.2, 1.35, 0.5)
+
+[sub_resource type="BoxShape3D" id="DoorShape"]
+size = Vector3(1.25, 2.45, 0.32)
+
+[sub_resource type="GDScript" id="GDScript_bed"]
+script/source = "extends StaticBody3D
+
+func _ready():
+	add_to_group(\"interactable\")
+
+func interact():
+	Hunger.reset_hunger()
+	DialogueManager.show_dialogue([{\"speaker\": \"\", \"text\": \"You rested in the little house. Hunger restored.\"}])
+
+func get_interact_text() -> String:
+	return \"Press E to sleep\"
+"
+
+[sub_resource type="GDScript" id="GDScript_door"]
+script/source = "extends StaticBody3D
+
+func _ready():
+	add_to_group(\"interactable\")
+
+func interact():
+	var player = get_tree().get_first_node_in_group(\"player\")
+	var interior = get_tree().get_first_node_in_group(\"house_interior\")
+	if player == null or interior == null:
+		return
+	player.global_position = interior.exit_position
+	player.is_indoors = false
+	player.planet_center = Vector3.ZERO
+	player.velocity = Vector3.ZERO
+	var cam = get_viewport().get_camera_3d()
+	if cam:
+		var up: Vector3 = player.global_position.normalized()
+		cam.global_position = player.global_position + up * 12
+	interior.visible = false
+
+func get_interact_text() -> String:
+	return \"Press E to exit house\"
+"
+
+[node name="HouseInterior" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
+script = ExtResource("1")
+
+[node name="RoomShell" type="StaticBody3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+mesh = SubResource("FloorMesh")
+
+[node name="FloorCol" type="CollisionShape3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+shape = SubResource("FloorShape")
+
+[node name="WallNorth" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -3.5)
+mesh = SubResource("WallMesh_long")
+
+[node name="WallNorthCol" type="CollisionShape3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -3.5)
+shape = SubResource("WallShape_long")
+
+[node name="WallEast" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 1.6, 0)
+mesh = SubResource("WallMesh_short")
+
+[node name="WallEastCol" type="CollisionShape3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 1.6, 0)
+shape = SubResource("WallShape_short")
+
+[node name="WallWest" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 1.6, 0)
+mesh = SubResource("WallMesh_short")
+
+[node name="WallWestCol" type="CollisionShape3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 1.6, 0)
+shape = SubResource("WallShape_short")
+
+[node name="WallSouthLeft" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.65, 1.6, 3.5)
+mesh = SubResource("WallMesh_half")
+
+[node name="WallSouthLeftCol" type="CollisionShape3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.65, 1.6, 3.5)
+shape = SubResource("WallShape_half")
+
+[node name="WallSouthRight" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.65, 1.6, 3.5)
+mesh = SubResource("WallMesh_half")
+
+[node name="WallSouthRightCol" type="CollisionShape3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.65, 1.6, 3.5)
+shape = SubResource("WallShape_half")
+
+[node name="CeilingBeamNorth" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.05, -2.2)
+mesh = SubResource("BeamMesh")
+
+[node name="CeilingBeamSouth" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.05, 1.7)
+mesh = SubResource("BeamMesh")
+
+[node name="WindowNorth" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 1.75, -3.39)
+mesh = SubResource("WindowMesh")
+
+[node name="WindowWest" type="MeshInstance3D" parent="RoomShell"]
+transform = Transform3D(0.08, 0, 0, 0, 1, 0, 0, 0, 1.15, -3.89, 1.65, -0.8)
+mesh = SubResource("WindowMesh")
+
+[node name="Rug" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.015, 0.65)
+mesh = SubResource("RugMesh")
+
+[node name="Bed" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.65, 0, -2.45)
+script = SubResource("GDScript_bed")
+
+[node name="BedFrame" type="MeshInstance3D" parent="Bed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.21, 0)
+mesh = SubResource("BedBaseMesh")
+
+[node name="Blanket" type="MeshInstance3D" parent="Bed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16, 0.52, 0.04)
+mesh = SubResource("BlanketMesh")
+
+[node name="Pillow" type="MeshInstance3D" parent="Bed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.56, -0.24)
+mesh = SubResource("PillowMesh")
+
+[node name="BedCol" type="CollisionShape3D" parent="Bed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 0)
+shape = SubResource("BedShape")
+
+[node name="SeedShelf" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.25, 0, -2.35)
+script = ExtResource("2")
+
+[node name="ShelfMesh" type="MeshInstance3D" parent="SeedShelf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+mesh = SubResource("ShelfMesh")
+
+[node name="SeedBookA" type="MeshInstance3D" parent="SeedShelf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.05, -0.22)
+mesh = SubResource("BookMesh")
+
+[node name="SeedBookB" type="MeshInstance3D" parent="SeedShelf"]
+transform = Transform3D(0.82, 0, 0, 0, 1, 0, 0, 0, 0.82, 0.16, 0.85, -0.22)
+mesh = SubResource("BookMesh")
+
+[node name="ShelfCol" type="CollisionShape3D" parent="SeedShelf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+shape = SubResource("ShelfShape")
+
+[node name="ReadingTable" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0, -0.55)
+
+[node name="TableTop" type="MeshInstance3D" parent="ReadingTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 0)
+mesh = SubResource("TableTopMesh")
+
+[node name="TableLegA" type="MeshInstance3D" parent="ReadingTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.34, -0.3)
+mesh = SubResource("TableLegMesh")
+
+[node name="TableLegB" type="MeshInstance3D" parent="ReadingTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.34, -0.3)
+mesh = SubResource("TableLegMesh")
+
+[node name="TableLegC" type="MeshInstance3D" parent="ReadingTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.34, 0.3)
+mesh = SubResource("TableLegMesh")
+
+[node name="TableLegD" type="MeshInstance3D" parent="ReadingTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.34, 0.3)
+mesh = SubResource("TableLegMesh")
+
+[node name="OpenBook" type="MeshInstance3D" parent="ReadingTable"]
+transform = Transform3D(1.2, 0, 0, 0, 0.55, 0, 0, 0, 1.1, -0.15, 0.83, 0.04)
+mesh = SubResource("BookMesh")
+
+[node name="TableLamp" type="MeshInstance3D" parent="ReadingTable"]
+transform = Transform3D(0.78, 0, 0, 0, 0.78, 0, 0, 0, 0.78, 0.46, 1.02, -0.17)
+mesh = SubResource("LampMesh")
+
+[node name="Chair" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.68, 0, 0.55)
+
+[node name="ChairSeat" type="MeshInstance3D" parent="Chair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+mesh = SubResource("ChairSeatMesh")
+
+[node name="ChairBack" type="MeshInstance3D" parent="Chair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0.27)
+mesh = SubResource("ChairBackMesh")
+
+[node name="Fireplace" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.38, 0.55, -0.6)
+mesh = SubResource("FireplaceMesh")
+
+[node name="Fire" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.15, 0, 0, 0, 1, -3.38, 0.45, -0.28)
+mesh = SubResource("FireMesh")
+
+[node name="InteriorDoor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.18)
+script = SubResource("GDScript_door")
+
+[node name="DoorMesh" type="MeshInstance3D" parent="InteriorDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+mesh = SubResource("DoorMesh")
+
+[node name="DoorCol" type="CollisionShape3D" parent="InteriorDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+shape = SubResource("DoorShape")
+
+[node name="RoomLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0.2)
+light_color = Color(1.0, 0.9, 0.68, 1)
+light_energy = 2.6
+omni_range = 8.5
+shadow_enabled = true
+
+[node name="FireLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.15, 0.65, -0.1)
+light_color = Color(1.0, 0.48, 0.18, 1)
+light_energy = 1.3
+omni_range = 4.2
+shadow_enabled = false
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 2.45)

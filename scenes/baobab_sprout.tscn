@@ -1,0 +1,129 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://scripts/objects/baobab.gd" id="1"]
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="2"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("3")
+shader_parameter/outline_color = Color(0.13, 0.08, 0.04, 1)
+shader_parameter/outline_thickness = 0.018
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_trunk"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.5, 0.32, 0.16, 1)
+shader_parameter/shadow_color = Color(0.2, 0.1, 0.04, 1)
+shader_parameter/shadow_threshold = -0.02
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.18
+shader_parameter/rim_color = Color(0.72, 0.48, 0.25, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_canopy"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.24, 0.45, 0.18, 1)
+shader_parameter/shadow_color = Color(0.08, 0.18, 0.06, 1)
+shader_parameter/shadow_threshold = -0.04
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.25
+shader_parameter/rim_color = Color(0.52, 0.76, 0.32, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_root"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.36, 0.2, 0.1, 1)
+shader_parameter/shadow_color = Color(0.13, 0.06, 0.025, 1)
+shader_parameter/shadow_threshold = -0.02
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.16
+shader_parameter/rim_color = Color(0.56, 0.34, 0.16, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_trunk"]
+top_radius = 0.08
+bottom_radius = 0.15
+height = 0.72
+radial_segments = 10
+material = SubResource("ShaderMaterial_trunk")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_branch"]
+top_radius = 0.035
+bottom_radius = 0.065
+height = 0.45
+radial_segments = 8
+material = SubResource("ShaderMaterial_trunk")
+
+[sub_resource type="SphereMesh" id="SphereMesh_canopy"]
+radius = 0.22
+height = 0.3
+radial_segments = 14
+rings = 7
+material = SubResource("ShaderMaterial_canopy")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_root"]
+top_radius = 0.018
+bottom_radius = 0.055
+height = 0.55
+radial_segments = 6
+material = SubResource("ShaderMaterial_root")
+
+[sub_resource type="SphereMesh" id="SphereMesh_seed"]
+radius = 0.09
+height = 0.07
+radial_segments = 10
+rings = 5
+material = SubResource("ShaderMaterial_root")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.2
+height = 0.85
+
+[node name="BaobabSprout" type="StaticBody3D"]
+script = ExtResource("1")
+
+[node name="RootBulb" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.35, 0, 0, 0, 0.7, 0, 0, 0, 1.35, 0, 0.08, 0)
+mesh = SubResource("SphereMesh_seed")
+
+[node name="RootA" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.55, 0, 0, 0, 1, -0.18, 0.08, 0)
+mesh = SubResource("CylinderMesh_root")
+
+[node name="RootB" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9, 0, 0, 0, 0.48, 0, 0, 0, 0.9, 0.18, 0.08, -0.04)
+mesh = SubResource("CylinderMesh_root")
+
+[node name="RootC" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.78, 0, 0, 0, 0.42, 0, 0, 0, 0.78, 0, 0.08, 0.2)
+mesh = SubResource("CylinderMesh_root")
+
+[node name="Trunk" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="BranchLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.82, 0, 0, 0, 0.75, 0, 0, 0, 0.82, -0.15, 0.7, 0)
+mesh = SubResource("CylinderMesh_branch")
+
+[node name="BranchRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.82, 0, 0, 0, 0.75, 0, 0, 0, 0.82, 0.15, 0.68, 0.02)
+mesh = SubResource("CylinderMesh_branch")
+
+[node name="Canopy" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.2, 0, 0, 0, 0.9, 0, 0, 0, 1.2, 0, 0.86, 0)
+mesh = SubResource("SphereMesh_canopy")
+
+[node name="CanopyLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9, 0, 0, 0, 0.76, 0, 0, 0, 0.9, -0.2, 0.78, 0.04)
+mesh = SubResource("SphereMesh_canopy")
+
+[node name="CanopyRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.86, 0, 0, 0, 0.72, 0, 0, 0, 0.86, 0.2, 0.78, -0.03)
+mesh = SubResource("SphereMesh_canopy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+shape = SubResource("CapsuleShape3D_1")

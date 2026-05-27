@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/objects/tool_pickup.gd" id="1"]
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="2"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("3")
+shader_parameter/outline_color = Color(0.1, 0.08, 0.05, 1)
+shader_parameter/outline_thickness = 0.02
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_shovel"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.5, 0.35, 0.18, 1)
+shader_parameter/shadow_color = Color(0.25, 0.15, 0.05, 1)
+shader_parameter/shadow_threshold = 0.0
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.08
+shader_parameter/specular_smoothness = 0.05
+shader_parameter/rim_width = 0.25
+shader_parameter/rim_color = Color(0.7, 0.55, 0.35, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_handle"]
+size = Vector3(0.06, 0.5, 0.06)
+material = SubResource("ShaderMaterial_shovel")
+
+[sub_resource type="BoxMesh" id="BoxMesh_blade"]
+size = Vector3(0.18, 0.15, 0.03)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(0.2, 0.55, 0.1)
+
+[node name="Shovel" type="StaticBody3D"]
+script = ExtResource("1")
+item_id = "shovel"
+
+[node name="Handle" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("BoxMesh_handle")
+
+[node name="Blade" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+mesh = SubResource("BoxMesh_blade")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_1")

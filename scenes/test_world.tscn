@@ -1,0 +1,64 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/planet_b612.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/player/camera_orbit.gd" id="3"]
+[ext_resource type="Environment" path="res://default_env.tres" id="4"]
+[ext_resource type="PackedScene" path="res://ui/dialogue_box.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/house_interior.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/planet_desert.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/planet_king.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/planet_lamplighter.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/planet_geographer.tscn" id="11"]
+
+[node name="TestWorld" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("4")
+
+[node name="SunLight" type="DirectionalLight3D" parent="." groups=["sun_light"]]
+transform = Transform3D(0.866, 0.25, -0.433, 0, 0.866, 0.5, 0.5, -0.433, 0.75, 0, 25, 0)
+light_color = Color(1.0, 0.78, 0.52, 1)
+light_energy = 0.72
+light_angular_distance = 2.4
+shadow_enabled = true
+shadow_bias = 0.03
+
+[node name="FillLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866, 0, -0.866, 0.5, 0, -15, 0)
+light_color = Color(0.48, 0.56, 0.76, 1)
+light_energy = 0.22
+shadow_enabled = false
+
+[node name="PlanetB612" parent="." instance=ExtResource("1")]
+
+[node name="PlanetDesert" parent="." instance=ExtResource("8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 150, -300)
+
+[node name="PlanetKing" parent="." instance=ExtResource("9")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -350, -200, 250)
+
+[node name="PlanetLamplighter" parent="." instance=ExtResource("10")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250, -200, -400)
+
+[node name="PlanetGeographer" parent="." instance=ExtResource("11")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -200, 300, -400)
+
+[node name="Player" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.0, 145.0, -9.0)
+
+[node name="OrbitCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.0, 147.0, 8)
+fov = 62.0
+far = 3000.0
+script = ExtResource("3")
+target_path = NodePath("../Player")
+distance = 8.5
+height = 1.35
+
+[node name="DialogueBox" parent="." instance=ExtResource("5")]
+
+[node name="HUD" parent="." instance=ExtResource("6")]
+
+[node name="HouseInterior" parent="." instance=ExtResource("7")]

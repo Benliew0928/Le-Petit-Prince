@@ -1,0 +1,223 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Shader" path="res://shaders/toon_ramp.gdshader" id="2"]
+[ext_resource type="Shader" path="res://shaders/outline_pass.gdshader" id="3"]
+[ext_resource type="Script" path="res://scripts/npcs/geographer.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/objects/planet_sun.gd" id="4"]
+[ext_resource type="Shader" path="res://shaders/sun_shader.gdshader" id="5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("3")
+shader_parameter/outline_color = Color(0.05, 0.06, 0.15, 1)
+shader_parameter/outline_thickness = 0.03
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_planet"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.18, 0.22, 0.38, 1)
+shader_parameter/shadow_color = Color(0.08, 0.1, 0.2, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.08
+shader_parameter/specular_size = 0.05
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.4
+shader_parameter/rim_color = Color(0.45, 0.5, 0.75, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_robe"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.18, 0.32, 0.22, 1)
+shader_parameter/shadow_color = Color(0.08, 0.18, 0.1, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.06
+shader_parameter/specular_size = 0.05
+shader_parameter/specular_smoothness = 0.04
+shader_parameter/rim_width = 0.3
+shader_parameter/rim_color = Color(0.4, 0.6, 0.45, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_skin"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.9, 0.75, 0.65, 1)
+shader_parameter/shadow_color = Color(0.65, 0.5, 0.4, 1)
+shader_parameter/shadow_threshold = 0.0
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.25
+shader_parameter/rim_color = Color(0.95, 0.85, 0.78, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_beard"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.95, 0.95, 0.95, 1)
+shader_parameter/shadow_color = Color(0.7, 0.7, 0.75, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.1
+shader_parameter/rim_width = 0.3
+shader_parameter/rim_color = Color(1.0, 1.0, 1.0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_desk"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.35, 0.2, 0.1, 1)
+shader_parameter/shadow_color = Color(0.18, 0.1, 0.05, 1)
+shader_parameter/shadow_threshold = -0.1
+shader_parameter/shadow_smoothness = 0.05
+shader_parameter/specular_size = 0.0
+shader_parameter/rim_width = 0.2
+shader_parameter/rim_color = Color(0.5, 0.35, 0.25, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_book1"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.65, 0.15, 0.15, 1)
+shader_parameter/shadow_color = Color(0.35, 0.05, 0.05, 1)
+shader_parameter/shadow_threshold = 0.0
+shader_parameter/rim_width = 0.2
+shader_parameter/rim_color = Color(0.85, 0.35, 0.35, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_book2"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.85, 0.65, 0.15, 1)
+shader_parameter/shadow_color = Color(0.45, 0.35, 0.05, 1)
+shader_parameter/shadow_threshold = 0.0
+shader_parameter/rim_width = 0.2
+shader_parameter/rim_color = Color(1.0, 0.85, 0.4, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_book3"]
+next_pass = SubResource("ShaderMaterial_outline")
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.15, 0.35, 0.65, 1)
+shader_parameter/shadow_color = Color(0.05, 0.15, 0.35, 1)
+shader_parameter/shadow_threshold = 0.0
+shader_parameter/rim_width = 0.2
+shader_parameter/rim_color = Color(0.35, 0.55, 0.85, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_planet"]
+radius = 7.0
+height = 14.0
+radial_segments = 48
+rings = 24
+material = SubResource("ShaderMaterial_planet")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_planet"]
+radius = 7.0
+
+[sub_resource type="CapsuleMesh" id="GeographerBody"]
+radius = 0.25
+height = 0.8
+material = SubResource("ShaderMaterial_robe")
+
+[sub_resource type="SphereMesh" id="GeographerHead"]
+radius = 0.2
+height = 0.4
+material = SubResource("ShaderMaterial_skin")
+
+[sub_resource type="PrismMesh" id="BeardMesh"]
+size = Vector3(0.2, 0.4, 0.15)
+material = SubResource("ShaderMaterial_beard")
+
+[sub_resource type="CapsuleShape3D" id="GeographerCollision"]
+radius = 0.4
+height = 1.2
+
+[sub_resource type="BoxMesh" id="DeskMesh"]
+size = Vector3(0.9, 0.45, 0.5)
+material = SubResource("ShaderMaterial_desk")
+
+[sub_resource type="BoxMesh" id="BookMesh1"]
+size = Vector3(0.4, 0.08, 0.4)
+material = SubResource("ShaderMaterial_book1")
+
+[sub_resource type="BoxMesh" id="BookMesh2"]
+size = Vector3(0.36, 0.07, 0.36)
+material = SubResource("ShaderMaterial_book2")
+
+[sub_resource type="BoxMesh" id="BookMesh3"]
+size = Vector3(0.3, 0.07, 0.3)
+material = SubResource("ShaderMaterial_book3")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sun"]
+shader = ExtResource("5")
+shader_parameter/core_color = Color(0.95, 0.95, 1.0, 1)
+shader_parameter/corona_color = Color(0.7, 0.55, 0.9, 1)
+shader_parameter/intensity = 10.0
+shader_parameter/corona_size = 1.3
+shader_parameter/turbulence_speed = 0.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_sun"]
+radius = 2.0
+height = 4.0
+radial_segments = 24
+rings = 12
+material = SubResource("ShaderMaterial_sun")
+
+[node name="PlanetGeographer" type="StaticBody3D" groups=["planet"]]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_planet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_planet")
+
+[node name="Geographer" type="StaticBody3D" parent="." groups=["geographer"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.3, 0)
+script = ExtResource("1")
+
+[node name="Body" type="MeshInstance3D" parent="Geographer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+mesh = SubResource("GeographerBody")
+
+[node name="Head" type="MeshInstance3D" parent="Geographer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("GeographerHead")
+
+[node name="Beard" type="MeshInstance3D" parent="Geographer"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0.65, 0.15)
+mesh = SubResource("BeardMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geographer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("GeographerCollision")
+
+[node name="Desk" type="MeshInstance3D" parent="Geographer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 0.4)
+mesh = SubResource("DeskMesh")
+
+[node name="BookStack" type="Node3D" parent="Geographer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0, 0.25)
+
+[node name="Book1" type="MeshInstance3D" parent="Geographer/BookStack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+mesh = SubResource("BookMesh1")
+
+[node name="Book2" type="MeshInstance3D" parent="Geographer/BookStack"]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 0, 0.115, 0)
+mesh = SubResource("BookMesh2")
+
+[node name="Book3" type="MeshInstance3D" parent="Geographer/BookStack"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0, 0.185, 0)
+mesh = SubResource("BookMesh3")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Geographer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.3)
+light_color = Color(1.0, 0.75, 0.4, 1)
+light_energy = 1.5
+omni_range = 4.0
+
+[node name="SunPivot" type="Node3D" parent="."]
+script = ExtResource("4")
+day_length = 30.0
+local_light_path = NodePath("LocalSun")
+
+[node name="LocalSun" type="OmniLight3D" parent="SunPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 22.0)
+light_color = Color(0.9, 0.92, 1.0, 1)
+light_energy = 2.0
+omni_range = 35.0
+shadow_enabled = true
+
+[node name="SunMesh" type="MeshInstance3D" parent="SunPivot/LocalSun"]
+mesh = SubResource("SphereMesh_sun")
