@@ -62,15 +62,15 @@ func _unhandled_input(event: InputEvent) -> void:
 				if _target:
 					_fp_look_dir = -_target.global_basis.z
 					_fp_pitch_angle = 0.0
-					for child in _target.get_children():
-						if child is MeshInstance3D:
-							child.visible = false
+					var body = _target.get_node_or_null("Body")
+					if body:
+						body.visible = false
 			else:
 				view_mode = ViewMode.THIRD_PERSON
 				if _target:
-					for child in _target.get_children():
-						if child is MeshInstance3D:
-							child.visible = true
+					var body = _target.get_node_or_null("Body")
+					if body:
+						body.visible = true
 
 	# ── Mouse input ──
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:

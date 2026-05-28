@@ -40,13 +40,18 @@ le-petit-prince-game/
 ├── GAME_CONTEXT.md                  ← this file, always at root
 ├── project.godot                    ← project config (Autoloads, main scene)
 ├── default_env.tres
+├── player.glb                       ← Imported Little Prince player model
 ├── shaders/
 │   ├── toon_ramp.gdshader            ← main cel shader
-│   └── outline_pass.gdshader         ← post-process outline
+│   ├── outline_pass.gdshader         ← post-process outline
+│   ├── space_sky.gdshader            ← painterly space/day-night sky
+│   ├── sun_shader.gdshader           ← glowing local suns
+│   └── navigation_line.gdshader      ← waypoint dust trail material
 ├── scenes/
-│   ├── test_world.tscn              ← UNIFIED WORLD (contains B-612, Desert, King)
-│   ├── player.tscn                  ← Player scene with camera rig
+│   ├── test_world.tscn              ← UNIFIED WORLD (contains all current planets)
+│   ├── player.tscn                  ← Player controller using imported player.glb model
 │   ├── airplane.tscn                ← Boardable airplane
+│   ├── navigation_line.tscn         ← 3D waypoint dust trail
 │   ├── rose.tscn                    ← Interactive rose with swaying anims
 │   ├── baobab_sprout.tscn           ← Baobab tree sprout
 │   ├── crop.tscn                    ← Growing crop (wheat)
@@ -60,6 +65,9 @@ le-petit-prince-game/
 │   ├── planet_b612.tscn             ← B-612 planet scene
 │   ├── planet_desert.tscn           ← Sandy Desert planet scene
 │   ├── planet_king.tscn             ← Royal King's planet scene
+│   ├── planet_lamplighter.tscn      ← Fast day/night lamplighter planet
+│   ├── planet_geographer.tscn       ← Geographer quest planet
+│   ├── geological_landmark.tscn     ← Memory Anchor / survey crystal
 │   └── desert_rock.tscn             ← Decorative desert rock prop
 ├── scripts/
 │   ├── player/
@@ -69,7 +77,10 @@ le-petit-prince-game/
 │   │   ├── dialogue_system.gd        ← DialogueManager autoload (show_dialogue)
 │   │   ├── held_item.gd              ← HeldItem autoload (one-item-at-a-time logic)
 │   │   ├── hunger.gd                 ← Hunger autoload (5-min cycle, starvation debuffs)
-│   │   ├── inventory.gd              ← Item/tool tracking
+│   │   ├── navigation_manager.gd     ← Map UI + waypoint trail autoload
+│   │   ├── sky_manager.gd            ← Dynamic sky and lighting autoload
+│   │   ├── geography_quest.gd        ← Geographer survey quest state
+│   │   ├── inventory.gd              ← Legacy/simple item tracking helper
 │   │   └── planet_gravity.gd         ← PlanetGravity helper class
 │   ├── npcs/
 │   │   ├── rose.gd                   ← Rose behavior + unprompted dialogue intervals
@@ -77,7 +88,11 @@ le-petit-prince-game/
 │   │   ├── fox.gd                    ← Fox taming AI, flee/approach, patience
 │   │   ├── fox_dialogue.gd           ← Taming stage dialogues
 │   │   ├── king.gd                   ← King puzzle controller (3 commands)
-│   │   └── king_dialogue.gd          ← Royal commands & dialogues
+│   │   ├── king_dialogue.gd          ← Royal commands & dialogues
+│   │   ├── lamplighter.gd            ← Rhythm puzzle controller
+│   │   ├── lamplighter_dialogue.gd   ← Lamp rhythm dialogue
+│   │   ├── geographer.gd             ← Survey quest giver
+│   │   └── geographer_dialogue.gd    ← Geographer quest dialogue
 │   └── objects/
 │       ├── airplane.gd               ← W/S throttle, A/D turn (banking), mouse fly control
 │       ├── baobab.gd                 ← Baobab interactive trimming (requires shovel + E presses)
@@ -89,13 +104,17 @@ le-petit-prince-game/
 │       ├── house_interior.gd         ← House interior exit trigger
 │       ├── seed_shelf.gd             ← Infinite seed grab spot
 │       ├── tool_pickup.gd            ← General pickup script for shovel/watering can
-│       ├── watering_can.gd           ← Watering can functionality
+│       ├── watering_can.gd           ← Legacy inventory-style watering can script
 │       ├── star_pickup.gd            ← Fallen star pickup (held item)
-│       └── sunset_zone.gd            ← Sun dimming + timer area for King's puzzle
+│       ├── sunset_zone.gd            ← Sun dimming + timer area for King's puzzle
+│       ├── planet_sun.gd             ← Local day/night sun orbit controller
+│       ├── geological_landmark.gd    ← Memory Anchor survey recording
+│       └── navigation_line.gd        ← Runtime mesh path for waypoints
 └── ui/
     ├── dialogue_box.gd               ← Renders narrative/dialogue text
     ├── dialogue_box.tscn             ← Dialogue box overlay scene
-    └── hud.tscn                      ← HUD (hunger bar, planet name, narative, emoji items, FP crosshair)
+    ├── hud.tscn                      ← HUD (hunger bar, planet name, narrative, emoji items, FP crosshair)
+    └── map_system.tscn/.gd           ← Stellar chart map with inspect/waypoint actions
 ```
 
 ---
@@ -104,9 +123,11 @@ le-petit-prince-game/
 
 ### 🪐 Unified World & Multi-Planet Gravity
 Rather than separate levels with loading screens, the game uses a single, seamless world (`test_world.tscn`):
-* **B-612 Planet**: At origin `(0, 0, 0)` with radius `15`
-* **Desert Planet**: Spaced away at `(80, 30, -60)` with radius `12`
-* **King's Planet**: Spaced away at `(-70, -40, 50)` with radius `6`
+* **B-612 Planet**: At origin `(0, 0, 0)` with radius `140`
+* **Desert Planet**: At `(400, 150, -300)` with radius `12`
+* **King's Planet**: At `(-350, -200, 250)` with radius `6`
+* **Lamplighter's Planet**: At `(250, -200, -400)` with radius `5`
+* **Geographer's Planet**: At `(-200, 300, -400)` with radius `7`
 
 Each planet is registered in the `"planet"` group. The player’s movement script (`player_controller.gd`) constantly evaluates distance to all planets, setting gravity dynamically toward the center of the nearest one.
 ```gdscript
@@ -129,11 +150,11 @@ Seamless interstellar flight is implemented via a Golden Biplane (`airplane.tscn
   - `S`: Decelerate / Decrease throttle
   - `A` / `D`: Yaw left/right (animates visual banking/roll)
   - **Mouse Movement**: Directs pitch and yaw, controlling the direction and flight angle.
-* **Landing**: Landing is automated. Flying close to any planet surface auto-lands the plane safely, enabling the player to press `E` to unboard.
+* **Landing**: Pressing `E` near a planet lands the plane on the nearest surface and restores on-foot control.
 
 ### 🎥 Multi-Mode Camera Rig
 The camera orbit rig (`camera_orbit.gd`) supports three distinct modes:
-1. **Third-Person View (Orbit)**: Standard camera orbiting behind the player capsule.
+1. **Third-Person View (Orbit)**: Standard camera orbiting behind the imported Little Prince player model.
 2. **First-Person View**: Persistent look-direction vector projected onto the current planet's tangent plane. Toggled dynamically with `V` (shows crosshair HUD overlay). This avoids camera flipping or weird spinning at the spherical planet poles.
 3. **Airplane Flight Cam**: Rigidly locked behind the plane, dampening sudden motions to avoid dizziness.
 
@@ -154,10 +175,30 @@ The player can only carry **one item at a time**, visible in their hand and disp
 * `HeldItem.consume()`: Drops or uses up the item.
 * `HeldItem.is_holding(item_id)` / `HeldItem.is_empty()` checking.
 
+### 🗺️ Stellar Chart & Navigation
+`NavigationManager` autoloads the map UI and a 3D dust-trail waypoint line:
+* `M` opens the Stellar Chart (`map_system.tscn`).
+* Left-click planets to inspect logs and points of interest.
+* Right-click planets or click POIs to set a waypoint.
+* `navigation_line.gd` renders a curved path through space or along the same planet surface.
+
+### 🌅 Local Suns, Sky, & Lighting
+Each planet has a `SunPivot` using `planet_sun.gd`. `SkyManager` reads the nearest planet's local sun and updates:
+* Global directional light color/energy
+* Ambient light and glow
+* Space sky shader sun direction, stars, and nebula visibility
+
 ### 🌾 Farming, Baobabs, & Hunger System
 * **Hunger**: The player has a 5-minute hunger cycle. Hunger is visible on the HUD. If starving, player movement speed is penalized.
-* **Farming**: Grab wheat seeds from the shelf → plant on tilled soil → water with watering can → wait for crop growth stages → harvest wheat → eat wheat to replenish hunger.
+* **Farming**: Grab wheat seeds from the shelf → plant in the garden plot → wait for crop growth stages → harvest wheat → eat wheat to replenish hunger.
 * **Baobab Trees**: Periodic spawn. If left unchecked, they grow. Player must equip the Shovel and press `E` up to 15 times to trim/pull them before they choke the planet.
+
+### 📖 Geographer Survey Quest
+The Geographer planet is implemented as a final exploration quest:
+* Speak to the Geographer to activate `GeographyQuest`.
+* Visit the four Memory Anchors on B-612, Desert, King's Planet, and Lamplighter's Planet.
+* Each anchor records a survey through `geological_landmark.gd`.
+* Returning with all four surveys completes the quest and triggers the "ephemeral" Rose realization.
 
 ---
 
@@ -171,7 +212,7 @@ The player can only carry **one item at a time**, visible in their hand and disp
 | **Desert** | Fox | Fox bonding system with 5 states (`STRANGER`, `CURIOUS`, `FAMILIAR`, `FRIEND`, `TAMED`). Fox flees or approaches depending on movement speed, distance, and player patience (sitting still). Fully tamed fox follows the player. | ✅ **Completed** |
 | **King's Planet** | King | Progression-based authority puzzle. The player must obey three "logical orders" in order: <br>1. **Sitting Order**: Sit on the royal throne (auto-detected via physics area with a 2s sitting timer). <br>2. **Bring Star Order**: Retrieve the fallen star using `HeldItem` (`HeldItem.hold("star")`). <br>3. **Sunset Order**: Stand in the designated sunset zone (Area3D dims the main sun, holds a 15s countdown timer). | ✅ **Completed** |
 | **Lamplighter's Planet** | Lamplighter | Rhythm-based light challenge: assist the exhausted Lamplighter by lighting/extinguishing his streetlamp exactly at sunset and sunrise (within a 1-second window) for 4 consecutive day/night cycles (one cycle every 8s). | ✅ **Completed** |
-| **Geographer's Planet** | Geographer | Collect factual statistics from other planets. | ⬜ **Planned / Not Started** |
+| **Geographer's Planet** | Geographer | Survey quest: speak to the Geographer, record four Memory Anchors from earlier planets, then return for the "ephemeral" Rose realization and Earth recommendation. | ✅ **Implemented / Needs playtest** |
 
 ---
 
@@ -192,19 +233,22 @@ The player can only carry **one item at a time**, visible in their hand and disp
 - [x] Rose interaction + mood system + unprompted dialogue intervals + watering loop
 - [x] Shovel tool + multi-press Baobab sprout weeding mechanic (up to 15 presses)
 - [x] DialogueBox UI overlay and DialogueManager Autoload logic
-- [x] Multi-stage wheat farming cycle (tilth, water, grow, harvest, eat)
+- [x] Multi-stage wheat farming cycle (seed, grow, harvest, eat)
 - [x] Hunger management system (5-minute loop, speed debuff when starving)
 - [x] HeldItem singleton (forces single-held-item constraint, shows visual item model / emoji HUD indicator)
 
-### Phase 3 — Interstellar Travel & Planets (In Progress)
-- [x] Unified World configuration (`test_world.tscn`) containing B-612, Desert, and King's Planet
-- [x] Seamless flight mechanics with the golden airplane (W/S speed, A/D banking, mouse look direction, auto-landing)
+### Phase 3 — Interstellar Travel & Planets (Feature-Complete / Needs Playtest)
+- [x] Unified World configuration (`test_world.tscn`) containing B-612, Desert, King, Lamplighter, and Geographer planets
+- [x] Seamless flight mechanics with the golden airplane (W/S speed, A/D banking, mouse look direction, press E near a planet to land)
 - [x] First-person camera stabilization over spherical poles (persistent vector projection)
 - [x] Fox NPC on Desert Planet with 5-stage bonding AI (Stranger -> Tamed)
 - [x] King NPC on King's Planet with progress-based puzzle validation (Sitting, Star gathering, Sunset timing)
 - [x] Narration system & planet-entry notifications in the HUD
 - [x] Lamplighter's Planet + rhythm puzzle
-- [ ] Geographer's Planet + data-gathering puzzle
+- [x] Geographer's Planet + Memory Anchor data-gathering puzzle
+- [x] Stellar Chart map + waypoint navigation trail
+- [x] Dynamic per-planet local sun and sky lighting system
+- [x] Imported Little Prince player model integrated into `player.tscn`
 
 ### Phase 4 — Polish (Planned)
 - [ ] Particle systems (stars, rose petals, flight dust)
@@ -223,8 +267,8 @@ The player can only carry **one item at a time**, visible in their hand and disp
 ## Current Status
 > **Update this section at the end of every work session.**
 
-**Last updated:** 2026-05-27
-**Current phase:** Phase 3 — Interstellar Travel & Planets
+**Last updated:** 2026-05-28
+**Current phase:** Phase 4 — Polish / Full Playthrough Verification
 **What was just completed:** 
 * Shifted B-612 from a tiny object-cluster planet into a larger, deliberately composed home-island vertical slice.
 * Tuned the third-person controller for snappier, more grounded feel with acceleration/deceleration, coyote time, jump buffering, stronger gravity, and grounded snap.
@@ -232,9 +276,13 @@ The player can only carry **one item at a time**, visible in their hand and disp
 * Reworked global lighting toward warm stylized daylight with softer ambient fill, subtle bloom, and painterly atmospheric fog.
 * Enlarged and recomposed B-612 landmarks so the house, rose courtyard, garden, volcanoes, and baobab threat read as intentional level composition.
 * Preserved the Little Prince identity through the prince model, rose dome, volcano trio, cozy house, and baobab storytelling.
+* Added Lamplighter and Geographer planets into the unified world.
+* Implemented the Geographer Memory Anchor survey quest across B-612, Desert, King, and Lamplighter planets.
+* Added Stellar Chart map navigation with POI waypoints and a glowing dust-trail navigation line.
+* Integrated `player.glb` as the current Little Prince player model.
 
-**Currently working on:** B-612 vertical-slice polish: authored level composition, controller feel, camera, and stylized lighting.
-**Blockers / open questions:** None.
+**Currently working on:** Phase 4 polish and end-to-end playthrough verification.
+**Blockers / open questions:** Godot CLI is not available on the current shell PATH, so live validation should be done in the Godot editor or after adding the Godot executable to PATH.
 
 ---
 
@@ -249,6 +297,10 @@ The player can only carry **one item at a time**, visible in their hand and disp
 | 2026-05-26 | **Obey Progression-Based King Gates** | Switched from physical gate doors (which players could easily walk around on a spherical surface) to a sequence of story-based visibility triggers. |
 | 2026-05-26 | **Sitting Auto-Detection** | Removed E-press sitting checks (since E also causes the player to stand/interact). Instead, sitting is auto-detected via a continuous `_physics_process` timer when in range. |
 | 2026-05-26 | **Single Held Item Constraint** | Ensured the player cannot carry multiple objects. `HeldItem.hold(item_id)` handles drop/equip cleanly, and HUD features matching emojis. |
+| 2026-05-28 | **B-612 Vertical Slice Scale-Up** | Current desired version uses a much larger, deliberately composed B-612 home island with authored landmarks and improved controller/camera feel. |
+| 2026-05-28 | **Stellar Chart Navigation** | Added map inspection, POI targeting, and a rendered navigation trail to make the expanded multi-planet world easier to traverse. |
+| 2026-05-28 | **Geographer Quest Implemented** | Geographer planet now sends the player back through earlier planets to record Memory Anchors and complete the novel-inspired "ephemeral" realization. |
+| 2026-05-28 | **Imported Player Model** | `player.tscn` now uses `player.glb` instead of the older handmade primitive player mesh. |
 
 ---
 

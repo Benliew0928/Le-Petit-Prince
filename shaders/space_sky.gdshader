@@ -124,14 +124,14 @@ vec3 deep_space_background(vec3 dir) {
 	float band_glow = exp(-band * band * 3.0);
 
 	// Base colors
-	vec3 deep_navy   = vec3(0.039, 0.039, 0.180);  // #0a0a2e
-	vec3 dark_purple = vec3(0.102, 0.039, 0.243);   // #1a0a3e
-	vec3 void_black  = vec3(0.008, 0.005, 0.020);
+	vec3 deep_navy   = vec3(0.008, 0.012, 0.040);  // Darker deep blue
+	vec3 dark_purple = vec3(0.005, 0.015, 0.045);  // Replaced purple with dark deep space blue
+	vec3 void_black  = vec3(0.002, 0.002, 0.006);
 
 	// Gradient based on band proximity + some vertical variation
 	float vertical = dir.y * 0.5 + 0.5;
-	vec3 base = mix(void_black, deep_navy, vertical * 0.3 + band_glow * 0.15);
-	base = mix(base, dark_purple, band_glow * 0.35);
+	vec3 base = mix(void_black, deep_navy, vertical * 0.2 + band_glow * 0.1);
+	base = mix(base, dark_purple, band_glow * 0.2);
 
 	// Very subtle large-scale colour variation (breaks uniformity)
 	vec2 uv = dir_to_uv(dir);
@@ -252,20 +252,20 @@ vec3 nebula_clouds(vec3 dir, float t) {
 	// Slow drift for organic feel
 	float drift = t * 0.008;
 
-	// ── Layer 1: Deep purple/magenta wisps ──
+	// ── Layer 1: Deep blue wisps ──
 	float n1 = fbm(uv * 4.0 + vec2(drift, -drift * 0.7), 6);
 	n1 = smoothstep(0.38, 0.75, n1);
-	vec3 c1 = vec3(0.35, 0.05, 0.45) * n1;  // Deep magenta-purple
+	vec3 c1 = vec3(0.05, 0.10, 0.25) * n1;  // Deep blue
 
-	// ── Layer 2: Teal/cyan filaments ──
+	// ── Layer 2: Faint teal filaments ──
 	float n2 = fbm(uv * 5.5 + vec2(-drift * 1.2, drift * 0.5) + 100.0, 5);
 	n2 = smoothstep(0.42, 0.78, n2);
-	vec3 c2 = vec3(0.05, 0.30, 0.40) * n2;  // Deep teal
+	vec3 c2 = vec3(0.02, 0.15, 0.25) * n2;  // Faint teal
 
-	// ── Layer 3: Warm rose / emission nebula ──
+	// ── Layer 3: Faint cyan ──
 	float n3 = fbm(uv * 3.0 + vec2(drift * 0.6, drift * 1.1) + 200.0, 6);
 	n3 = smoothstep(0.40, 0.80, n3);
-	vec3 c3 = vec3(0.50, 0.08, 0.25) * n3;  // Warm rose-magenta
+	vec3 c3 = vec3(0.04, 0.12, 0.20) * n3;  // Faint cyan
 
 	// ── Layer 4: Faint golden dust band ──
 	float n4 = fbm(uv * 7.0 + vec2(drift * 0.3, -drift * 0.9) + 300.0, 4);
@@ -392,7 +392,8 @@ void sky() {
 	vec3 star_color_cool = vec3(0.8, 0.85, 1.0);  // Slight blue tint for tiny/medium
 	col += tiny * star_color_cool * star_brightness * star_dim;
 	col += medium * vec3(0.95, 0.92, 1.0) * star_brightness * star_dim;
-	col += bright * star_brightness * star_dim;
+	// Removing the big bright stars as requested
+	// col += bright * star_brightness * star_dim;
 
 	// ── 5. Sun disc, corona & god rays ──
 	col += sun_and_corona(dir, sun_dir, sun_energy, sun_color.rgb, t);

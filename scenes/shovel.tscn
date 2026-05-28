@@ -34,6 +34,7 @@ size = Vector3(0.2, 0.55, 0.1)
 [node name="Shovel" type="StaticBody3D"]
 script = ExtResource("1")
 item_id = "shovel"
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
 
 [node name="Handle" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)

@@ -15,6 +15,7 @@ size = Vector3(0.12, 0.35, 0.12)
 [node name="WheatItem" type="StaticBody3D"]
 script = ExtResource("1")
 item_id = "wheat"
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)

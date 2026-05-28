@@ -53,13 +53,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			is_sitting = not is_sitting
 			if is_sitting:
-				var body := get_node_or_null("Body") as MeshInstance3D
+				var body := get_node_or_null("Body") as Node3D
 				if body:
 					var tween := create_tween()
 					tween.tween_property(body, "scale:y", 0.5, 0.2)
 					tween.parallel().tween_property(body, "position:y", 0.2, 0.2)
 			else:
-				var body := get_node_or_null("Body") as MeshInstance3D
+				var body := get_node_or_null("Body") as Node3D
 				if body:
 					var tween := create_tween()
 					tween.tween_property(body, "scale:y", 1.0, 0.2)
@@ -72,7 +72,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				return
 			if is_sitting:
 				is_sitting = false
-				var body := get_node_or_null("Body") as MeshInstance3D
+				var body := get_node_or_null("Body") as Node3D
 				if body:
 					body.scale.y = 1.0
 					body.position.y = 0.4

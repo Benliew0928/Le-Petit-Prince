@@ -32,10 +32,10 @@ const SUN_COLORS := {
 }
 
 const AMBIENT_COLORS := {
-	-1.0: Color(0.02, 0.03, 0.08),    # Night: deep dark blue
-	-0.1: Color(0.08, 0.04, 0.06),    # Pre-dawn: dark purple
-	0.0: Color(0.25, 0.12, 0.08),     # Sunrise: warm dark
-	0.2: Color(0.35, 0.28, 0.22),     # Morning: warm ambient
+	-1.0: Color(0.18, 0.22, 0.35),    # Night: brighter moonlit evening blue (+30%)
+	-0.1: Color(0.20, 0.15, 0.22),    # Pre-dawn: lighter purple
+	0.0: Color(0.35, 0.20, 0.15),     # Sunrise: warm dark
+	0.2: Color(0.40, 0.32, 0.25),     # Morning: warm ambient
 	0.5: Color(0.45, 0.42, 0.38),     # Day: neutral warm
 	1.0: Color(0.5, 0.48, 0.42),      # Full day: bright ambient
 }
@@ -52,10 +52,10 @@ const SUN_ENERGY_CURVE := {
 }
 
 const AMBIENT_ENERGY_CURVE := {
-	-1.0: 0.08,      # Night: very dim
-	-0.05: 0.12,     # Pre-dawn
-	0.0: 0.2,        # Sunrise
-	0.2: 0.38,       # Morning
+	-1.0: 0.48,      # Night: much brighter evening feel (+30%)
+	-0.05: 0.52,     # Pre-dawn
+	0.0: 0.55,       # Sunrise
+	0.2: 0.60,       # Morning
 	0.5: 0.52,       # Day
 	1.0: 0.55,       # Full day
 }
@@ -245,10 +245,10 @@ func _update_directional_light() -> void:
 
 	# Fill light: cool blue, opposite of sun, dimmer at night
 	if _fill_light:
-		var fill_energy: float = clampf(remap(_sun_altitude, -0.2, 0.3, 0.02, 0.15), 0.02, 0.15)
+		var fill_energy: float = clampf(remap(_sun_altitude, -0.2, 0.3, 0.22, 0.35), 0.22, 0.35)
 		_fill_light.light_energy = fill_energy
 		# Shift fill from deep blue (night) to subtle blue-grey (day)
-		var fill_color := Color(0.3, 0.35, 0.55).lerp(Color(0.48, 0.56, 0.76), clampf(_sun_altitude + 0.5, 0.0, 1.0))
+		var fill_color := Color(0.45, 0.50, 0.85).lerp(Color(0.48, 0.56, 0.76), clampf(_sun_altitude + 0.5, 0.0, 1.0))
 		_fill_light.light_color = fill_color
 
 

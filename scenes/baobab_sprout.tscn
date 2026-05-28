@@ -83,6 +83,7 @@ height = 0.85
 
 [node name="BaobabSprout" type="StaticBody3D"]
 script = ExtResource("1")
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
 
 [node name="RootBulb" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.35, 0, 0, 0, 0.7, 0, 0, 0, 1.35, 0, 0.08, 0)
